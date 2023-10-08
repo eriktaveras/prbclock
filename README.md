@@ -22,7 +22,7 @@ Una aplicación web de registro de tiempo para empleados temporales. Desarrollad
 
 1. Clonar el repositorio:
     ```bash
-    git clone https://github.com/tu-usuario/employee-time-record-app.git
+    git clone https://github.com/tu-usuario/prbclock.git
     ```
 
 2. Instalar las dependencias:
