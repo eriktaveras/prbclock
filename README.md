@@ -1,26 +1,27 @@
-# Employee Time Record App
+# Employee Management System
+
+Este es un sistema de gestión de empleados construido con Django.
 
 ## Descripción
 
-Una aplicación web de registro de tiempo para empleados temporales. Desarrollada con Django y Bootstrap 5.3, esta aplicación permite a los administradores registrar las horas de trabajo, tiempo de almuerzo, y más.
+El sistema permite realizar un seguimiento de los empleados y sus registros de tiempo. Los empleados pueden estar asociados con registros de tiempo que contienen información sobre sus horas de trabajo, incluyendo la hora de entrada, la hora de salida y el tiempo de almuerzo.
 
 ## Características
 
-- Registro de entrada, salida y tiempo de almuerzo.
-- Tabla de resumen semanal organizada por días laborables.
-- Exportación e impresión de reportes de horas trabajadas.
-- Interfaz administrativa de Django para gestionar empleados.
+- Gestión de empleados: Agregar, editar y eliminar empleados.
+- Registro de tiempo: Registrar las horas de trabajo de los empleados.
+- Cálculo de horas trabajadas: Calcular las horas trabajadas por semana y la hora de inicio.
+- Interfaz de usuario amigable: Utiliza Bootstrap 5.3 para una interfaz moderna y receptiva.
+
+## Requisitos del Sistema
+
+- Python 3.10
+- Django 4.2.6
+- Otros requisitos específicos (si los hay)
 
 ## Instalación
 
-### Requisitos
-
-- Python 3.x
-- Django 3.x
-
-### Pasos
-
-1. Clonar el repositorio:
+1. Clona el repositorio:
     ```bash
     git clone https://github.com/tu-usuario/prbclock.git
     ```
@@ -42,14 +43,24 @@ Una aplicación web de registro de tiempo para empleados temporales. Desarrollad
 
 ## Uso
 
-1. Acceder al admin de Django para añadir, modificar o eliminar empleados y registros.
-2. Acceder a la página principal para ver el resumen de registros de tiempo.
+1. Accede a la página de inicio en `http://localhost:8000/` para ver la lista de empleados y sus registros de tiempo.
 
-## Tecnologías Utilizadas
+2. Haz clic en un empleado para ver detalles individuales, incluyendo el total de horas trabajadas esta semana y la hora de inicio.
 
-- Backend: Django
-- Frontend: Bootstrap 5.3, Moment.js
-- Base de Datos: SQLite (puede cambiarse)
+3. Para agregar un nuevo empleado:
+   - Accede al panel de administración en `http://localhost:8000/admin/` utilizando las credenciales de superusuario que creaste durante la instalación.
+   - Ve a la sección "Employees" y selecciona "Add" para agregar un nuevo empleado. Completa la información requerida y guarda.
+
+4. Para registrar horas de trabajo para un empleado:
+   - Accede al panel de administración en `http://localhost:8000/admin/` utilizando las credenciales de superusuario.
+   - Ve a la sección "Time Records" y selecciona "Add" para agregar un nuevo registro de tiempo. Asocia el registro con el empleado correspondiente y completa los campos de fecha, hora de entrada, hora de salida y tiempo de almuerzo.
+
+5. Para calcular el total de horas trabajadas esta semana y la hora de inicio de un empleado, accede a su perfil desde la página de inicio y los datos se mostrarán en la parte superior de la página.
+
+Ten en cuenta que este es un proyecto de ejemplo y la funcionalidad real puede variar según las necesidades de tu empresa o proyecto.
+
+¡Disfruta utilizando el sistema de gestión de empleados!
+
 
 ## Mejoras Futuras
 
