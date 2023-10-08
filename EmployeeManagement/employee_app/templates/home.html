@@ -69,8 +69,9 @@
                         {% for record in pending_records %}
                         <tr>
                             <td>{{ record.id }}</td>
-                            <td>{{ record.employee.name }}</td>
-                            <td>{{ record.date }}</td>
+<td>
+    <a href="{% url 'employee_detail' record.employee.id %}">{{ record.employee.name }}</a>
+</td>                            <td>{{ record.date }}</td>
                             <td>{{ record.time_in }}</td>
                             <td>{{ record.time_out }}</td>
                             <td>{{ record.lunch_time }}</td>
@@ -109,27 +110,28 @@
 
     
     <!-- Add Lunch Form -->
-    <!-- Add Lunch Form within a Modal -->
+   <!-- Add Lunch Form within a Modal -->
 <div class="action-button-group mx-2">
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addLunchModal">
+    <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#addLunchModal{{ record.id }}">
         <i class="bi bi-clock"></i>
         <small>Añadir Almuerzo</small>
     </button>
 
     <!-- Modal -->
-    <div class="modal fade" id="addLunchModal" tabindex="-1" aria-labelledby="addLunchModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addLunchModal{{ record.id }}" tabindex="-1" aria-labelledby="addLunchModalLabel{{ record.id }}" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content bg-dark text-white">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="addLunchModalLabel">Añadir Tiempo de Almuerzo</h5>
+                    <h5 class="modal-title" id="addLunchModalLabel{{ record.id }}">Añadir Tiempo de Almuerzo</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form method="post" aria-label="Add Lunch Form">
                         {% csrf_token %}
-                        <input type="hidden" name="action" value="add_lunch">
+                        <input type="hidden" name="employee_id" value="{{ record.employee.id }}">
                         <input type="hidden" name="record_id" value="{{ record.id }}">
+                        <input type="hidden" name="action" value="add_lunch">
                         <div class="mb-3">
                             <label for="lunchMinutes" class="form-label">Minutos de Almuerzo</label>
                             <input type="number" id="lunchMinutes" name="lunch_minutes" class="form-control bg-dark text-white" aria-label="Lunch Minutes" data-bs-toggle="tooltip" title="Lunch Minutes">
@@ -141,6 +143,7 @@
         </div>
     </div>
 </div>
+
 
 </td>
 
@@ -177,8 +180,9 @@
                                 {% for record in all_records %}
                                 <tr>
                                     <td>{{ record.id }}</td>
-                                    <td>{{ record.employee.name }}</td>
-                                    <td>{{ record.date }}</td>
+<td>
+    <a href="{% url 'employee_detail' record.employee.id %}">{{ record.employee.name }}</a>
+</td>                                    <td>{{ record.date }}</td>
                                     <td>{{ record.time_in }}</td>
                                     <td>{{ record.time_out }}</td>
                                     <td>{{ record.lunch_time }}</td>

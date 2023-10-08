@@ -7,8 +7,11 @@ from datetime import datetime  # Correct import for using datetime.now()
 import csv
 from datetime import timedelta
 from django.http import HttpResponse
+from django.db.models import Sum
+from django.views import View
 
-
+from .models import TimeRecord
+from django.http import HttpResponseServerError
 
 
 
@@ -38,19 +41,33 @@ class HomePageView(TemplateView):
     def handle_check_in(self, request):
         form = TimeRecordForm(request.POST)
         if form.is_valid():
+            # Asegúrate de que la hora de entrada se registre en la zona horaria correcta
+            form.instance.time_in = timezone.now().time()
             form.save()
 
     def handle_check_out(self, request):
         record_id = request.POST.get('record_id')
         record = get_object_or_404(TimeRecord, id=record_id)
+        # Asegúrate de que la hora de salida se registre en la zona horaria correcta
         record.time_out = timezone.now().time()
         record.save()
 
+
     def handle_add_lunch(self, request):
-        record_id = request.POST.get('record_id')
-        record = get_object_or_404(TimeRecord, id=record_id)
-        record.lunch_time = timezone.timedelta(minutes=int(request.POST.get('lunch_minutes')))
-        record.save()
+        try:
+            record_id = request.POST.get('record_id')
+            employee_id = request.POST.get('employee_id')
+            lunch_minutes = int(request.POST.get('lunch_minutes'))
+            record = get_object_or_404(TimeRecord, id=record_id, employee_id=employee_id)
+            record.lunch_time = timezone.timedelta(minutes=lunch_minutes)
+            record.save()
+            return HttpResponse("Almuerzo agregado correctamente")
+        except Exception as e:
+            return HttpResponseServerError(f"Error: {e}")
+
+
+
+
 
 class WeeklySummaryView(ListView):
     template_name = 'weekly_summary.html'
@@ -105,3 +122,74 @@ class WeeklySummaryView(ListView):
             writer.writerow([record.id, record.employee.name, record.date, record.time_in, record.time_out, lunch_minutes, record.total_hours])
 
         return response
+
+
+class MonthlySummaryView(View):
+    template_name = 'monthly_summary.html'
+
+    def get(self, request, year, month):
+        # Convierte los parámetros de año y mes en números enteros
+        year = int(year)
+        month = int(month)
+
+        # Calcula la fecha de inicio y fin del mes
+        start_date = timezone.make_aware(datetime(year, month, 1))
+        end_date = start_date + timedelta(days=32)
+
+        # Obtiene los registros de tiempo dentro del rango de fechas
+        time_records = TimeRecord.objects.filter(date__range=[start_date, end_date])
+
+        # Calcula las horas totales por empleado utilizando un diccionario
+        summary_data = {}
+        for record in time_records:
+            if record.employee.name not in summary_data:
+                summary_data[record.employee.name] = {
+                    'employee': record.employee.name,
+                    'total_hours': 0,
+                }
+
+            if record.time_in and record.time_out:
+                delta = record.working_hours()
+                if delta:
+                    summary_data[record.employee.name]['total_hours'] += delta.total_seconds() / 3600
+
+        # Convierte el diccionario en una lista para la plantilla
+        summary_data_list = list(summary_data.values())
+
+        # Pasa los datos a la plantilla
+        context = {
+            'year': year,
+            'month': month,
+            'summary_data': summary_data_list,
+        }
+
+        return render(request, self.template_name, context)
+
+def employee_detail(request, employee_id):
+    employee = Employee.objects.get(pk=employee_id)
+    
+    # Obtén la fecha de inicio de la semana (lunes actual)
+    today = timezone.now().date()
+    start_of_week = today - timedelta(days=today.weekday())
+
+    # Filtra todos los registros de tiempo para este empleado
+    time_records = employee.time_records.order_by('date', 'time_in')
+    
+    total_hours_week = timedelta()
+    start_time = None
+
+    # Calcula el total de horas trabajadas en la semana actual y la hora de inicio
+    for record in time_records:
+        if record.time_in:
+            if not start_time:
+                start_time = record.time_in
+            total_hours_week += record.working_hours()
+    
+    context = {
+        'employee': employee,
+        'total_hours_week': total_hours_week,
+        'start_time': start_time,
+        'time_records': time_records,  # Pasa todos los registros de tiempo
+    }
+    
+    return render(request, 'employee_detail.html', context)

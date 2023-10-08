@@ -9,29 +9,68 @@
 
     <!-- Mostrar las horas totales trabajadas -->
     <div class="alert alert-info">
-        <strong>Horas totales trabajadas: </strong>{{ total_hours }} hrs
+        <strong>Horas totales trabajadas:</strong> {{ total_hours }} hrs
     </div>
 
     <table class="table table-dark table-bordered text-center">
         <thead class="table-secondary text-dark">
             <tr>
                 <th>Nombre</th>
-                <th>Día de la Semana</th>
-                <th>Hora de Ingreso</th>
-                <th>Hora de Salida</th>
-                <th>Tiempo de Almuerzo</th>
-                <th>Horas Trabajadas</th>
+                <th>Lunes</th>
+                <th>Martes</th>
+                <th>Miércoles</th>
+                <th>Jueves</th>
+                <th>Viernes</th>
+                <th>Sábado</th>
+                <th>Domingo</th>
+                <th>Total</th>
             </tr>
         </thead>
         <tbody>
             {% for record in time_records %}
             <tr>
-                <td>{{ record.employee.name }}</td>
-                <td>{{ record.day_of_week }}</td>  <!-- Aquí se muestra el día de la semana -->
-                <td>{{ record.time_in }}</td>
-                <td>{{ record.time_out }}</td>
-                <td>{{ record.lunch_time }}</td>
-                <td>{{ record.total_hours }}</td>  <!-- Horas trabajadas para cada registro -->
+<td>
+    <a href="{% url 'employee_detail' record.employee.id %}">{{ record.employee.name }}</a>
+</td>                <td>
+                    {% if record.day_of_week == 'Monday' %}
+                        {{ record.time_in|time:"H:i" }} - {{ record.time_out|time:"H:i" }} ({{ record.lunch_time|time:"H:i" }})
+                    {% endif %}
+                </td>
+                <td>
+                    {% if record.day_of_week == 'Tuesday' %}
+                        {{ record.time_in|time:"H:i" }} - {{ record.time_out|time:"H:i" }} ({{ record.lunch_time|time:"H:i" }})
+                    {% endif %}
+                </td>
+                <td>
+                    {% if record.day_of_week == 'Wednesday' %}
+                        {{ record.time_in|time:"H:i" }} - {{ record.time_out|time:"H:i" }} ({{ record.lunch_time|time:"H:i" }})
+                    {% endif %}
+                </td>
+                <td>
+                    {% if record.day_of_week == 'Thursday' %}
+                        {{ record.time_in|time:"H:i" }} - {{ record.time_out|time:"H:i" }} ({{ record.lunch_time|time:"H:i" }})
+                    {% endif %}
+                </td>
+                <td>
+                    {% if record.day_of_week == 'Friday' %}
+                        {{ record.time_in|time:"H:i" }} - {{ record.time_out|time:"H:i" }} ({{ record.lunch_time|time:"H:i" }})
+                    {% endif %}
+                </td>
+                <td>
+                    {% if record.day_of_week == 'Saturday' %}
+                        {{ record.time_in|time:"H:i" }} - {{ record.time_out|time:"H:i" }} ({{ record.lunch_time|time:"H:i" }})
+                    {% endif %}
+                </td>
+                <td>
+                    {% if record.day_of_week == 'Sunday' %}
+                        {{ record.time_in|time:"H:i" }} - {{ record.time_out|time:"H:i" }} ({{ record.lunch_time|time:"H:i" }})
+                    {% endif %}
+                </td>
+                <td>
+                    {% if record.total_hours %}
+                        {{ record.total_hours }} hrs
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
